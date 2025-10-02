@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // This dependency is for using JUnit 5, the standard testing framework for Java.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+
+application {
+    // Defines the main class that will be executed when we run the app.
+    mainClass = 'com.bankapp.Main'
+}
+
+test {
+    // Enables the JUnit Platform for running tests.
+    useJUnitPlatform()
+}
