@@ -21,65 +21,91 @@ public class Main {
             System.out.println("4. Exit");
             System.out.print("Choose an option: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
 
-            switch (choice) {
-                case 1:
-                    handleDeposit(scanner, bank);
-                    break;
-                case 2:
-                    handleWithdrawal(scanner, bank);
-                    break;
-                case 3:
-                    handleCheckBalance(scanner, bank);
-                    break;
-                case 4:
-                    exit = true;
-                    System.out.println("Thank you for using the banking app!");
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
+                switch (choice) {
+                    case 1:
+                        handleDeposit(scanner, bank);
+                        break;
+                    case 2:
+                        handleWithdrawal(scanner, bank);
+                        break;
+                    case 3:
+                        handleCheckBalance(scanner, bank);
+                        break;
+                    case 4:
+                        exit = true;
+                        System.out.println("Thank you for using the banking app!");
+                        break;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                }
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // Clear the invalid input
+            } catch (java.util.NoSuchElementException e) {
+                System.out.println("No input available. Exiting application.");
+                exit = true;
             }
         }
         scanner.close();
     }
 
     private static void handleDeposit(Scanner scanner, Bank bank) {
-        System.out.print("Enter account number: ");
-        String accNum = scanner.nextLine();
-        Optional<Account> accountOpt = bank.findAccount(accNum);
+        try {
+            System.out.print("Enter account number: ");
+            String accNum = scanner.nextLine();
+            Optional<Account> accountOpt = bank.findAccount(accNum);
 
-        if (accountOpt.isPresent()) {
-            System.out.print("Enter amount to deposit: ");
-            double amount = scanner.nextDouble();
-            accountOpt.get().deposit(amount);
-        } else {
-            System.out.println("Account not found.");
+            if (accountOpt.isPresent()) {
+                System.out.print("Enter amount to deposit: ");
+                double amount = scanner.nextDouble();
+                accountOpt.get().deposit(amount);
+            } else {
+                System.out.println("Account not found.");
+            }
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid amount.");
+            scanner.nextLine(); // Clear the invalid input
+        } catch (java.util.NoSuchElementException e) {
+            System.out.println("No input available. Returning to main menu.");
         }
     }
 
     private static void handleWithdrawal(Scanner scanner, Bank bank) {
-        System.out.print("Enter account number: ");
-        String accNum = scanner.nextLine();
-        Optional<Account> accountOpt = bank.findAccount(accNum);
+        try {
+            System.out.print("Enter account number: ");
+            String accNum = scanner.nextLine();
+            Optional<Account> accountOpt = bank.findAccount(accNum);
 
-        if (accountOpt.isPresent()) {
-            System.out.print("Enter amount to withdraw: ");
-            double amount = scanner.nextDouble();
-            accountOpt.get().withdraw(amount);
-        } else {
-            System.out.println("Account not found.");
+            if (accountOpt.isPresent()) {
+                System.out.print("Enter amount to withdraw: ");
+                double amount = scanner.nextDouble();
+                accountOpt.get().withdraw(amount);
+            } else {
+                System.out.println("Account not found.");
+            }
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid amount.");
+            scanner.nextLine(); // Clear the invalid input
+        } catch (java.util.NoSuchElementException e) {
+            System.out.println("No input available. Returning to main menu.");
         }
     }
 
     private static void handleCheckBalance(Scanner scanner, Bank bank) {
-        System.out.print("Enter account number: ");
-        String accNum = scanner.nextLine();
-        bank.findAccount(accNum)
-                .ifPresentOrElse(
-                        account -> System.out.println("Current balance is: " + account.getBalance()),
-                        () -> System.out.println("Account not found.")
-                );
+        try {
+            System.out.print("Enter account number: ");
+            String accNum = scanner.nextLine();
+            bank.findAccount(accNum)
+                    .ifPresentOrElse(
+                            account -> System.out.println("Current balance is: " + account.getBalance()),
+                            () -> System.out.println("Account not found.")
+                    );
+        } catch (java.util.NoSuchElementException e) {
+            System.out.println("No input available. Returning to main menu.");
+        }
     }
 }
