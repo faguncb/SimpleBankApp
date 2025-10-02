@@ -24,6 +24,11 @@ public class Account {
         return accountNumber;
     }
 
+    // Public method (getter) for the owner name.
+    public String getOwnerName() {
+        return ownerName;
+    }
+
     // Public method to deposit money.
     public void deposit(double amount) {
         if (amount > 0) {
