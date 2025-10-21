@@ -10,6 +10,7 @@ repositories {
 dependencies {
     // This dependency is for using JUnit 5, the standard testing framework for Java.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 application {
