@@ -10,10 +10,13 @@ This is a beginner-friendly Java project designed to demonstrate core programmin
 * **Java Fundamentals:**
     * Variables, data types, methods, and constructors.
     * Control flow (`if-else`, `switch`, `while` loop).
+    * Exception handling with try-catch blocks.
 * **Collections Framework:**
     * Using `ArrayList` to manage a collection of `Account` objects.
 * **Unit Testing:**
     * Writing and running tests with JUnit 5 to ensure code correctness.
+    * Using `@BeforeEach`, `@Test`, and `@DisplayName` annotations.
+    * Assertion methods for validating expected behavior.
 * **Build Management:**
     * Using Gradle to compile code, manage dependencies, and run the application.
 * **Modern Java Features:**
@@ -33,24 +36,60 @@ This is a beginner-friendly Java project designed to demonstrate core programmin
     cd SimpleBankApp
     ```
 
-2.  **Run the tests:**
+2.  **Build the project:**
     ```bash
-    ./gradlew test
+    gradle build
+    ```
+    This compiles the code, runs tests, and packages the application.
+
+3.  **Run the tests:**
+    ```bash
+    gradle test
     ```
 
-3.  **Run the application:**
+4.  **Run the application:**
     ```bash
-    ./gradlew run
+    gradle run
     ```
     Follow the on-screen menu to interact with the banking system.
+    
+    **Note:** For interactive input in terminal, use:
+    ```bash
+    gradle run --console=plain
+    ```
+
+5.  **Run the JAR file directly:**
+    ```bash
+    java -jar build/libs/SimpleBankApp.jar
+    ```
 
 ## 📂 Project Structure
 ```
 SimpleBankApp/
-├── build.gradle
+├── build.gradle              # Gradle build configuration
+├── README.md                 # Project documentation
 └── src/
     ├── main/
     │   └── java/com/bankapp/
-    └── test/
+    │       ├── Account.java  # Account class with deposit/withdraw methods
+    │       ├── Bank.java     # Bank class managing multiple accounts
+    │       └── Main.java     # Main application with user interface
+    └── test/                 # Test directory (note: singular 'test', not 'tests')
         └── java/com/bankapp/
+            └── AccountTest.java  # JUnit 5 unit tests for Account class
 ```
+
+## 🔧 Dependencies
+
+The project uses the following dependencies (managed by Gradle):
+
+* **JUnit 5 (Jupiter)** - Testing framework
+  * `org.junit.jupiter:junit-jupiter:5.8.1`
+  * `org.junit.platform:junit-platform-launcher` (runtime)
+
+## 📝 Recent Improvements
+
+* ✅ Fixed test directory structure to follow Gradle conventions (`src/test/` instead of `src/tests/`)
+* ✅ Added JUnit Platform Launcher dependency for proper test execution
+* ✅ All unit tests passing successfully
+* ✅ Build process fully functional
