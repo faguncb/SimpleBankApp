@@ -1,0 +1,63 @@
+name: 🔄 Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  dependency-update:
+    name: 🔄 Check for Dependency Updates
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🔧 Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: 🔄 Check for Gradle dependency updates
+        run: ./gradlew dependencyUpdates
+
+      - name: 📊 Generate dependency report
+        run: ./gradlew dependencyUpdatesJson
+
+      - name: 📤 Upload dependency report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-updates
+          path: build/dependencyUpdates/
+
+  security-update:
+    name: 🔒 Security Updates Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🔧 Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: 🔒 Check for security vulnerabilities
+        run: ./gradlew dependencyCheckAnalyze
+
+      - name: 📊 Upload security report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-updates
+          path: build/reports/dependency-check-report.html
