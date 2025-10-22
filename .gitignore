@@ -1,9 +1,9 @@
-.idea
+.idea/
 
-.gradle
+.gradle/
 
 bin/
 
-build/tmp/*
+build/
 
 .vscode
