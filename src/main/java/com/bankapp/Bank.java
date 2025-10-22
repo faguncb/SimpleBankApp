@@ -26,4 +26,26 @@ public class Bank {
                 .filter(account -> account.getAccountNumber().equals(accountNumber))
                 .findFirst();
     }
+
+    // Method to get all accounts in the bank.
+    public List<Account> getAllAccounts() {
+        return new ArrayList<>(accounts); // Return a copy to prevent external modification
+    }
+
+    // Method to delete an account by its number.
+    public boolean deleteAccount(String accountNumber) {
+        return accounts.removeIf(account -> account.getAccountNumber().equals(accountNumber));
+    }
+
+    // Method to get the total number of accounts.
+    public int getAccountCount() {
+        return accounts.size();
+    }
+
+    // Method to get total bank balance across all accounts.
+    public double getTotalBankBalance() {
+        return accounts.stream()
+                .mapToDouble(Account::getBalance)
+                .sum();
+    }
 }
