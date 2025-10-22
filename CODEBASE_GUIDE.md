@@ -9,6 +9,7 @@
 6. [Testing Strategy](#testing-strategy)
 7. [Key Programming Concepts](#key-programming-concepts)
 8. [Step-by-Step Code Walkthrough](#step-by-step-code-walkthrough)
+9. [GitHub Actions - CI/CD Automation](#github-actions---cicd-automation)
 
 ---
 
@@ -600,6 +601,436 @@ This banking app demonstrates concepts used in:
 3. **Database Programming**: Learn JDBC or JPA
 4. **Web Development**: Learn Spring Boot for web applications
 5. **Testing**: Explore more advanced testing techniques
+
+---
+
+## 🤖 GitHub Actions - CI/CD Automation
+
+### What is GitHub Actions?
+
+**GitHub Actions** is a powerful automation platform that allows you to create workflows that automatically run tasks when certain events happen in your repository. Think of it as having a robot assistant that watches your code and performs actions automatically.
+
+### Why Use GitHub Actions?
+
+1. **🔄 Continuous Integration (CI)**: Automatically test your code when you make changes
+2. **🚀 Continuous Deployment (CD)**: Automatically deploy your app when tests pass
+3. **🛡️ Quality Assurance**: Catch bugs and issues before they reach production
+4. **⏰ Time Saving**: Automate repetitive tasks like building, testing, and deploying
+5. **👥 Team Collaboration**: Ensure all team members follow the same standards
+
+### How GitHub Actions Works
+
+```
+Code Change → GitHub Event → Workflow Triggered → Actions Run → Results Reported
+```
+
+**Example Flow:**
+1. You push code to GitHub
+2. GitHub detects the push event
+3. A workflow automatically starts
+4. The workflow runs tests, builds the project, and checks code quality
+5. You get notified of the results
+
+---
+
+### 🏗️ Our Project's GitHub Actions Setup
+
+Our Simple Banking App has **6 different workflows** that handle different aspects of the development process:
+
+#### 1. 🔧 **Main CI Workflow** (`.github/workflows/ci.yml`)
+
+**What it does:**
+- Runs every time you push code or create a pull request
+- Builds the project
+- Runs all tests
+- Checks code quality
+- Scans for security vulnerabilities
+
+**When it runs:**
+- Push to `main` branch
+- Pull requests to `main` branch
+
+**Key features:**
+```yaml
+name: 🚀 CI/CD Pipeline
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+```
+
+**What this means:**
+- **`on:`** - Defines when the workflow should run
+- **`jobs:`** - Groups of tasks that run in parallel or sequence
+- **`runs-on: ubuntu-latest`** - Uses a fresh Ubuntu virtual machine
+- **`actions/checkout@v4`** - Downloads your code
+- **`actions/setup-java@v4`** - Installs Java 17
+
+#### 2. 🔍 **Code Quality Workflow** (`.github/workflows/code-quality.yml`)
+
+**What it does:**
+- Checks code formatting and style
+- Analyzes code for potential bugs
+- Ensures code follows best practices
+
+**When it runs:**
+- Every Monday at 9:00 AM UTC
+- Can be triggered manually
+
+**Key features:**
+```yaml
+name: 🔍 Code Quality Analysis
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+  workflow_dispatch:     # Manual trigger
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+```
+
+**What this means:**
+- **`schedule:`** - Runs automatically on a schedule
+- **`cron: '0 9 * * 1'`** - Cron expression for weekly runs
+- **`workflow_dispatch:`** - Allows manual triggering from GitHub UI
+
+#### 3. 🔄 **Dependency Update Workflow** (`.github/workflows/dependency-update.yml`)
+
+**What it does:**
+- Checks for outdated dependencies
+- Creates issues when updates are available
+- Helps keep your project secure and up-to-date
+
+**When it runs:**
+- Every Sunday at 2:00 AM UTC
+
+**Key features:**
+```yaml
+name: 🔄 Dependency Updates
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Every Sunday at 2 AM UTC
+
+jobs:
+  dependency-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for dependency updates
+        run: ./gradlew dependencyUpdates
+```
+
+#### 4. ✅ **Pull Request Validation** (`.github/workflows/pr-validation.yml`)
+
+**What it does:**
+- Validates pull requests before they can be merged
+- Ensures code quality standards are met
+- Prevents broken code from being merged
+
+**When it runs:**
+- On every pull request
+
+**Key features:**
+```yaml
+name: ✅ PR Validation
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        run: ./gradlew test
+      - name: Build project
+        run: ./gradlew build
+```
+
+#### 5. 🚀 **Release Workflow** (`.github/workflows/release.yml`)
+
+**What it does:**
+- Automatically creates releases when you create a Git tag
+- Builds the project and creates downloadable files
+- Publishes release notes
+
+**When it runs:**
+- When you create a new Git tag (like `v1.0.0`)
+
+**Key features:**
+```yaml
+name: 🚀 Release
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on tags starting with 'v'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+```
+
+#### 6. 🧪 **Manual Testing Workflow** (`.github/workflows/manual-test.yml`)
+
+**What it does:**
+- Allows you to run custom tests manually
+- Provides different testing options (full, security, performance)
+- Useful for debugging and special testing scenarios
+
+**When it runs:**
+- Only when manually triggered
+
+**Key features:**
+```yaml
+name: 🧪 Manual Testing Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of test to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+        - full
+        - security
+        - performance
+```
+
+---
+
+### 🛠️ Understanding Workflow Components
+
+#### **Workflow Structure:**
+```yaml
+name: Workflow Name
+on: [events]
+jobs:
+  job-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step Name
+        run: command
+```
+
+#### **Key Components Explained:**
+
+1. **`name:`** - Human-readable name for the workflow
+2. **`on:`** - Events that trigger the workflow
+3. **`jobs:`** - Groups of tasks that run together
+4. **`runs-on:`** - Operating system for the virtual machine
+5. **`steps:`** - Individual tasks within a job
+6. **`uses:`** - Reusable actions from the GitHub Marketplace
+7. **`run:`** - Shell commands to execute
+
+#### **Common Events:**
+- **`push:`** - Code is pushed to repository
+- **`pull_request:`** - Pull request is created or updated
+- **`schedule:`** - Time-based triggers (cron)
+- **`workflow_dispatch:`** - Manual trigger
+- **`release:`** - New release is created
+
+#### **Common Actions:**
+- **`actions/checkout@v4`** - Downloads repository code
+- **`actions/setup-java@v4`** - Sets up Java environment
+- **`actions/setup-node@v4`** - Sets up Node.js environment
+- **`actions/upload-artifact@v4`** - Saves files for later use
+- **`actions/download-artifact@v4`** - Downloads previously saved files
+
+---
+
+### 🔧 Build Configuration for GitHub Actions
+
+Our `build.gradle` file includes several plugins that work with GitHub Actions:
+
+```gradle
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'                    // Code style checking
+    id 'com.github.ben-manes.versions' // Dependency updates
+    id 'org.owasp.dependencycheck'     // Security scanning
+}
+
+checkstyle {
+    ignoreFailures = true
+    maxWarnings = 200
+}
+
+dependencyCheck {
+    failBuildOnCVSS = 7
+    outputDirectory = "build/reports/dependency-check"
+}
+```
+
+**What this means:**
+- **Checkstyle**: Ensures code follows style guidelines
+- **Dependency Updates**: Checks for outdated packages
+- **OWASP Dependency Check**: Scans for security vulnerabilities
+- **`ignoreFailures = true`**: Allows build to continue even with warnings
+- **`maxWarnings = 200`**: Sets warning threshold
+
+---
+
+### 📊 Understanding Workflow Results
+
+#### **Workflow Status:**
+- ✅ **Success (Green)**: All checks passed
+- ❌ **Failure (Red)**: One or more checks failed
+- ⚠️ **Warning (Yellow)**: Checks passed with warnings
+- ⏸️ **Cancelled (Grey)**: Workflow was stopped
+
+#### **Where to View Results:**
+1. **GitHub Repository** → **Actions** tab
+2. **Pull Request** → **Checks** section
+3. **Commit** → **Status** indicators
+
+#### **Understanding Check Results:**
+- **Build**: Project compiles successfully
+- **Test**: All tests pass
+- **Checkstyle**: Code follows style guidelines
+- **Security**: No critical vulnerabilities found
+- **Dependencies**: All dependencies are up-to-date
+
+---
+
+### 🚀 How to Use GitHub Actions in Your Project
+
+#### **Step 1: Create a Workflow File**
+1. Go to your repository on GitHub
+2. Click **Actions** tab
+3. Click **New workflow**
+4. Choose a template or start from scratch
+5. Create `.github/workflows/your-workflow.yml`
+
+#### **Step 2: Define Triggers**
+```yaml
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+```
+
+#### **Step 3: Set Up Environment**
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+```
+
+#### **Step 4: Add Your Commands**
+```yaml
+      - name: Run tests
+        run: ./gradlew test
+      - name: Build project
+        run: ./gradlew build
+```
+
+#### **Step 5: Commit and Push**
+```bash
+git add .github/workflows/
+git commit -m "Add GitHub Actions workflow"
+git push
+```
+
+---
+
+### 🎯 Benefits for Our Banking App
+
+#### **For Developers:**
+1. **🛡️ Quality Assurance**: Automatic testing prevents bugs
+2. **⚡ Fast Feedback**: Know immediately if code has issues
+3. **🔄 Consistency**: Same process for all team members
+4. **📊 Visibility**: Clear status of code health
+
+#### **For the Project:**
+1. **🚀 Reliable Builds**: Consistent build environment
+2. **🔒 Security**: Automatic vulnerability scanning
+3. **📈 Maintainability**: Regular dependency updates
+4. **📋 Documentation**: Automated release notes
+
+#### **For Users:**
+1. **🎯 Stable Releases**: Only tested code gets released
+2. **🔧 Quick Fixes**: Issues are caught and fixed early
+3. **📱 Better Experience**: Higher quality software
+
+---
+
+### 🔍 Troubleshooting Common Issues
+
+#### **Build Failures:**
+1. **Check the logs** in the Actions tab
+2. **Look for error messages** in red text
+3. **Verify dependencies** are correct
+4. **Test locally** with the same commands
+
+#### **Test Failures:**
+1. **Run tests locally** first
+2. **Check test environment** differences
+3. **Verify test data** and setup
+4. **Look for timing issues** in tests
+
+#### **Permission Issues:**
+1. **Check repository settings** for Actions permissions
+2. **Verify workflow file** syntax
+3. **Ensure secrets** are properly configured
+4. **Check branch protection** rules
+
+---
+
+### 🎓 Key Takeaways
+
+#### **What You've Learned:**
+1. **🤖 Automation**: How to automate development tasks
+2. **🔄 CI/CD**: Continuous Integration and Deployment concepts
+3. **🛡️ Quality Gates**: How to ensure code quality automatically
+4. **📊 Monitoring**: How to track project health
+5. **🚀 Deployment**: How to automate releases
+
+#### **Best Practices:**
+- ✅ **Start Simple**: Begin with basic build and test workflows
+- ✅ **Fail Fast**: Catch issues early in the development process
+- ✅ **Document Everything**: Clear workflow names and descriptions
+- ✅ **Monitor Results**: Regularly check workflow status
+- ✅ **Iterate**: Improve workflows based on team needs
+
+#### **Real-World Applications:**
+GitHub Actions concepts apply to:
+- **Web Development**: Automated testing and deployment
+- **Mobile Apps**: Build and publish to app stores
+- **Data Science**: Automated model training and evaluation
+- **DevOps**: Infrastructure management and monitoring
+- **Open Source**: Community contribution validation
+
+---
+
+*This GitHub Actions section completes our comprehensive guide to the Simple Banking App. The automation setup ensures code quality, security, and reliability while providing valuable learning opportunities for modern software development practices.*
 
 ---
 
