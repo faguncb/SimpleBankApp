@@ -78,7 +78,7 @@ jobs:
           timeout 10s ./gradlew run --console=plain || echo "Application started successfully (timeout expected)"
 
       - name: 📊 Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: manual-test-results-${{ inputs.test_type }}-${{ inputs.java_version }}-${{ inputs.os }}
           path: |

@@ -46,7 +46,7 @@ jobs:
         run: echo "Complexity analysis skipped - CPD plugin not available"
 
       - name: 📊 Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pr-validation-results
           path: |
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 📊 Download test results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: pr-validation-results
           path: build/

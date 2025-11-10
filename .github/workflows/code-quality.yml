@@ -58,7 +58,7 @@ jobs:
         run: echo "SpotBugs analysis skipped - plugin not available"
 
       - name: 📊 Upload analysis reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-analysis-reports
           path: |
@@ -84,7 +84,7 @@ jobs:
         run: echo "Complexity analysis skipped - CPD plugin not available"
 
       - name: 📊 Upload complexity report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: complexity-report
           path: build/reports/
