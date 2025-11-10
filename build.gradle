@@ -2,8 +2,8 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
-    id 'com.github.ben-manes.versions' version '0.49.0'
-    id 'org.owasp.dependencycheck' version '8.4.0'
+    id 'com.github.ben-manes.versions' version '0.53.0'
+    id 'org.owasp.dependencycheck' version '12.1.8'
 }
 
 java {
@@ -20,8 +20,8 @@ repositories {
 
 dependencies {
     // This dependency is for using JUnit 5, the standard testing framework for Java.
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.junit.jupiter:junit-jupiter:6.0.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.1'
 }
 
 application {
@@ -36,7 +36,7 @@ test {
 
 // Checkstyle configuration
 checkstyle {
-    toolVersion = '10.12.1'
+    toolVersion = '12.1.1'
     configFile = file("config/checkstyle/checkstyle.xml")
     ignoreFailures = true  // Allow build to pass with warnings
     maxWarnings = 200      // Allow up to 200 warnings
