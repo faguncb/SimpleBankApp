@@ -38,4 +38,7 @@ Thumbs.db
 *.env
 
 # Configuration files
-config/
+!config/checkstyle/
+!config/checkstyle/**
+!config/dependency-check/
+!config/dependency-check/**
