@@ -28,9 +28,6 @@ jobs:
       - name: 🔄 Check for Gradle dependency updates
         run: ./gradlew dependencyUpdates
 
-      - name: 📊 Generate dependency report
-        run: ./gradlew dependencyUpdatesJson
-
       - name: 📤 Upload dependency report
         uses: actions/upload-artifact@v4
         with:
